@@ -1,42 +1,13 @@
 <?php
 
+opcache_reset();
+
 session_start();
+
 include "includes/connection.php";
 
 
-
-$total_funerals = mysqli_query($conn,
-"SELECT COUNT(*) AS total FROM funerals");
-
-
-$funeral_count = mysqli_fetch_assoc($total_funerals)['total'];
-
-
-
-$total_contributors = mysqli_query($conn,
-"SELECT COUNT(*) AS total FROM contributors");
-
-
-$contributor_count = mysqli_fetch_assoc($total_contributors)['total'];
-
-
-
-$total_contributions = mysqli_query($conn,
-"SELECT COUNT(*) AS total FROM contributions");
-
-
-$contribution_count = mysqli_fetch_assoc($total_contributions)['total'];
-
-
-
-$total_amount = mysqli_query($conn,
-"SELECT SUM(amount) AS total FROM contributions");
-
-
-$amount = mysqli_fetch_assoc($total_amount)['total'];
-
-
-?>
+// Check login
 
 if(!isset($_SESSION['username'])){
 
@@ -45,7 +16,51 @@ if(!isset($_SESSION['username'])){
 
 }
 
-?>
+
+// Total funerals
+
+$total_funerals = mysqli_query($conn,
+"SELECT COUNT(*) AS total FROM funerals"
+);
+
+$funeral_count = mysqli_fetch_assoc($total_funerals)['total'];
+
+
+
+
+// Total contributors
+
+$total_contributors = mysqli_query($conn,
+"SELECT COUNT(*) AS total FROM contributors"
+);
+
+$contributor_count = mysqli_fetch_assoc($total_contributors)['total'];
+
+
+
+
+// Total contribution records
+
+$total_contributions = mysqli_query($conn,
+"SELECT COUNT(*) AS total FROM contributions"
+);
+
+$contribution_count = mysqli_fetch_assoc($total_contributions)['total'];
+
+
+
+
+// Total amount
+
+$total_amount = mysqli_query($conn,
+"SELECT SUM(amount) AS total FROM contributions"
+);
+
+
+$amount_result = mysqli_fetch_assoc($total_amount);
+
+
+$amount = $amount_result['total'] ?? 0;
 
 
 ?>
@@ -366,7 +381,7 @@ Amount
 
 <h2>
 
-GH₵ <?php echo number_format($amount,2); ?>
+GH₵ <?php echo number_format($amount ?? 0,2); ?>
 
 </h2>
 
